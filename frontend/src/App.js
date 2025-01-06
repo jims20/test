@@ -1,26 +1,24 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Shoes from "./pages/Shoes";
-import Add from "./pages/Add";
-import Update from "./pages/Update";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/register.jsx";
+import Shoes from "./pages/Shoes.jsx";
 import "./style.css";
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        {/* Navigation Links */}
-        <nav>
-          <Link to="/">Home</Link> |{" "}
-          <Link to="/add">Add New Item</Link>
-        </nav>
-        <Routes>
-          <Route path="/" element={<Shoes />} />
-          <Route path="/add" element={<Add />} />
-          <Route path="/update/:id" element={<Update />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    return (
+        <div className="App">
+            <BrowserRouter>
+                <nav>
+                    <Link to="/">Login</Link> | <Link to="/register">Register</Link> | <Link to="/shoes">Shoes</Link>
+                </nav>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/shoes" element={<Shoes />} />
+                </Routes>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;

@@ -1,62 +1,124 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-const Shoes = () => {
-  const [shoes, setShoes] = useState([]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+function Shoes() {
+    const [shoes, setShoes] = useState([]);
+    const [editingShoe, setEditingShoe] = useState(null); // Tracks which shoe is being edited
+    const [editForm, setEditForm] = useState({
+        prod_name: "",
+        prod_description: "",
+        image: "",
+        price: "",
+    });
 
-  useEffect(() => {
-    const fetchAllShoes = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/shoes");
-        setShoes(res.data);
-      } catch (err) {
-        console.log(err);
-        setError("Failed to load shoes.");
-      }
+    // Fetch the list of shoes
+    useEffect(() => {
+        fetch("http://localhost:8800/shoes")
+            .then((response) => response.json())
+            .then((data) => setShoes(data))
+            .catch((error) => console.error("Error fetching shoes:", error));
+    }, []);
+
+    // Delete a shoe
+    const handleDeleteShoe = (id) => {
+        fetch(`http://localhost:8800/shoes/${id}`, { method: "DELETE" })
+            .then((response) => response.json())
+            .then((message) => {
+                alert(message);
+                setShoes((prev) => prev.filter((shoe) => shoe.id !== id));
+            })
+            .catch((error) => console.error("Error deleting shoe:", error));
     };
-    fetchAllShoes();
-  }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete("http://localhost:8800/shoes/" + id);
-      setShoes(shoes.filter(shoe => shoe.id !== id));
-      setSuccess(true);
-    } catch (err) {
-      setError("Failed to delete the shoe.");
-      console.log(err);
-    }
-  };
+    // Show the update form for a specific shoe
+    const handleUpdateShoe = (shoe) => {
+        setEditingShoe(shoe.id);
+        setEditForm({
+            prod_name: shoe.prod_name,
+            prod_description: shoe.prod_description,
+            image: shoe.image,
+            price: shoe.price,
+        });
+    };
 
-  return (
-    <div>
-      <h1>Marketplace</h1>
-      <div className="shoes">
-        {error && <p className="error">{error}</p>}
-        {success && <p className="success">Item deleted successfully!</p>}
-        {shoes.map((shoe) => (
-          <div className="shoe" key={shoe.id}>
-            {shoe.image && <img src={shoe.image} alt={shoe.prod_name} />}
-            <h2>{shoe.prod_name}</h2>
-            <p>{shoe.prod_description}</p>
-            <span>{shoe.price}</span>
-            <button className="delete" onClick={() => handleDelete(shoe.id)}>Delete</button>
-            <Link to={`/update/${shoe.id}`} className="update">
-              <button>Update</button>
-            </Link>
-          </div>
-        ))}
-      </div>
+    // Handle form changes
+    const handleEditFormChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((prev) => ({ ...prev, [name]: value }));
+    };
 
-      <Link to="/add" className="add-new">
-        <button>Add new item</button>
-      </Link>
-    </div>
-  );
-};
+    // Submit the updated shoe
+    const handleSubmitUpdate = () => {
+        fetch(`http://localhost:8800/shoes/${editingShoe}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editForm),
+        })
+            .then((response) => response.json())
+            .then((message) => {
+                alert(message);
+                setShoes((prev) =>
+                    prev.map((shoe) =>
+                        shoe.id === editingShoe ? { ...shoe, ...editForm } : shoe
+                    )
+                );
+                setEditingShoe(null); // Close the form
+            })
+            .catch((error) => console.error("Error updating shoe:", error));
+    };
+
+    return (
+        <div className="App">
+            <h1>Shoes</h1>
+            <div className="shoes">
+                {shoes.map((shoe) => (
+                    <div key={shoe.id} className="shoe">
+                        <img src={shoe.image || "https://via.placeholder.com/200"} alt={shoe.prod_name} />
+                        <h3>{shoe.prod_name}</h3>
+                        <p>{shoe.prod_description}</p>
+                        <p>${shoe.price}</p>
+                        <button onClick={() => handleUpdateShoe(shoe)}>Update</button>
+                        <button onClick={() => handleDeleteShoe(shoe.id)}>Delete</button>
+                    </div>
+                ))}
+            </div>
+
+            {editingShoe && (
+                <div className="edit-form">
+                    <h2>Update Shoe</h2>
+                    <input
+                        type="text"
+                        name="prod_name"
+                        placeholder="Product Name"
+                        value={editForm.prod_name}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="text"
+                        name="prod_description"
+                        placeholder="Description"
+                        value={editForm.prod_description}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="text"
+                        name="image"
+                        placeholder="Image URL"
+                        value={editForm.image}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="number"
+                        name="price"
+                        placeholder="Price"
+                        value={editForm.price}
+                        onChange={handleEditFormChange}
+                    />
+                    <button onClick={handleSubmitUpdate}>Submit Update</button>
+                    <button onClick={() => setEditingShoe(null)}>Cancel</button>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default Shoes;
