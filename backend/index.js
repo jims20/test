@@ -12,7 +12,7 @@ const db = mysql.createConnection({
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // Test route
 app.get("/", (req, res) => {
@@ -28,6 +28,7 @@ app.get("/shoes", (req, res) => {
     });
 });
 
+// Add a shoe
 app.post("/shoes", (req, res) => {
     const q = "INSERT INTO shoes (prod_name, prod_description, image, price) VALUES (?)";
     const values = [req.body.prod_name, req.body.prod_description, req.body.image, req.body.price];
@@ -37,6 +38,8 @@ app.post("/shoes", (req, res) => {
         res.status(200).json("Successfully added a new shoe.");
     });
 });
+
+// Update a shoe
 app.put("/shoes/:id", (req, res) => {
     const shoeID = req.params.id;
     const q =
@@ -48,6 +51,8 @@ app.put("/shoes/:id", (req, res) => {
         res.status(200).json("Shoe updated successfully.");
     });
 });
+
+// Delete a shoe
 app.delete("/shoes/:id", (req, res) => {
     const shoeID = req.params.id;
     const q = "DELETE FROM shoes WHERE id = ?";
@@ -58,7 +63,6 @@ app.delete("/shoes/:id", (req, res) => {
     });
 });
 
-
 // Register route
 app.post("/register", async (req, res) => {
     const { name, email, password, address, phoneNumber, role } = req.body;
@@ -67,14 +71,31 @@ app.post("/register", async (req, res) => {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const q = "INSERT INTO users (name, email, password, address, phoneNumber, role) VALUES (?, ?, ?, ?, ?, ?)";
-    const values = [name, email, hashedPassword, address || "", phoneNumber || "", role || "user"];
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const q =
+            "INSERT INTO users (name, email, password, address, phoneNumber, role) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [
+            name,
+            email,
+            hashedPassword,
+            address || "",
+            phoneNumber || "",
+            role || "user",
+        ];
 
-    db.query(q, values, (err) => {
-        if (err) return res.status(500).json(err);
-        res.status(200).json({ message: "User registered successfully" });
-    });
+        db.query(q, values, (err) => {
+            if (err) {
+                if (err.code === "ER_DUP_ENTRY") {
+                    return res.status(400).json({ message: "Email already exists" });
+                }
+                return res.status(500).json({ message: "Database error", error: err });
+            }
+            res.status(201).json({ message: "User registered successfully" });
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
 });
 
 // Login route
