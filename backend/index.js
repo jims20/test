@@ -115,6 +115,36 @@ app.post("/login", (req, res) => {
     });
 });
 
+// Cart routes
+app.get("/cart", (req, res) => {
+    const q = "SELECT cart.*, shoes.prod_name, shoes.image, shoes.price FROM cart JOIN shoes ON cart.shoe_id = shoes.id";
+    db.query(q, (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
+
+app.post("/cart", (req, res) => {
+    const { shoe_id, quantity } = req.body;
+    const q = "INSERT INTO cart (shoe_id, quantity) VALUES (?, ?)";
+    const values = [shoe_id, quantity];
+
+    db.query(q, values, (err) => {
+        if (err) return res.status(500).json(err);
+        res.status(200).json("Item added to cart.");
+    });
+});
+
+app.delete("/cart/:id", (req, res) => {
+    const cartID = req.params.id;
+    const q = "DELETE FROM cart WHERE id = ?";
+
+    db.query(q, [cartID], (err) => {
+        if (err) return res.status(500).json(err);
+        res.status(200).json("Item removed from cart.");
+    });
+});
+
 app.listen(8800, () => {
     console.log("Connected to backend");
 });

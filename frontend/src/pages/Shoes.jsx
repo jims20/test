@@ -66,6 +66,18 @@ function Shoes() {
             .catch((error) => console.error("Error updating shoe:", error));
     };
 
+    // Add to Cart functionality
+    const handleAddToCart = (id) => {
+        fetch("http://localhost:8800/cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ shoe_id: id, quantity: 1 }),
+        })
+            .then((response) => response.json())
+            .then((message) => alert(message))
+            .catch((error) => console.error("Error adding to cart:", error));
+    };
+
     return (
         <div className="App">
             <h1>Shoes</h1>
@@ -78,6 +90,8 @@ function Shoes() {
                         <p>${shoe.price}</p>
                         <button onClick={() => handleUpdateShoe(shoe)}>Update</button>
                         <button onClick={() => handleDeleteShoe(shoe.id)}>Delete</button>
+                        {/* Add to Cart button */}
+                        <button onClick={() => handleAddToCart(shoe.id)}>Add to Cart</button>
                     </div>
                 ))}
             </div>
