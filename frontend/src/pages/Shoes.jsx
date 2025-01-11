@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Added useNavigate
 
 function Shoes() {
     const [shoes, setShoes] = useState([]);
@@ -9,6 +10,8 @@ function Shoes() {
         image: "",
         price: "",
     });
+
+    const navigate = useNavigate(); // Hook to navigate pages
 
     // Fetch the list of shoes
     useEffect(() => {
@@ -78,9 +81,19 @@ function Shoes() {
             .catch((error) => console.error("Error adding to cart:", error));
     };
 
+    // Navigate to Cart Page
+    const goToCart = () => {
+        navigate("/cart");
+    };
+
     return (
         <div className="App">
-            <h1>Shoes</h1>
+            {/* Cart Button in Upper Right */}
+            <button className="cart-button" onClick={goToCart}>
+                Cart
+            </button>
+
+            
             <div className="shoes">
                 {shoes.map((shoe) => (
                     <div key={shoe.id} className="shoe">
@@ -136,3 +149,5 @@ function Shoes() {
 }
 
 export default Shoes;
+
+

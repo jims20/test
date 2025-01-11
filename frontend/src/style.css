@@ -100,13 +100,31 @@ background-color: #0056b3;
   background-color: red;
   color: white;
   border: none;
-  padding: 10px 20px; /* Same size as Login button */
-  font-size: 16px; /* Match Login button font size */
+  padding: 5px 10px; /* Smaller padding */
+  font-size: 12px; /* Smaller text size */
   cursor: pointer;
   border-radius: 5px;
   font-weight: bold;
+  width: auto; /* Adjust to content size */
+  height: auto; /* Adjust to content size */
 }
 
-.logout-button:hover {
-  background-color: darkred;
+.shoes-title {
+  position: absolute;
+  top: 10px; /* Move it to the top */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Ensure perfect centering */
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
 }
+
+
+
+
+
+
+
+
+
+
