@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Added useNavigate
 
+
 function Shoes() {
     const [shoes, setShoes] = useState([]);
     const [editingShoe, setEditingShoe] = useState(null); // Tracks which shoe is being edited
@@ -10,8 +11,11 @@ function Shoes() {
         image: "",
         price: "",
     });
+    const [showAddForm, setShowAddForm] = useState(false);
+
 
     const navigate = useNavigate(); // Hook to navigate pages
+
 
     // Fetch the list of shoes
     useEffect(() => {
@@ -20,6 +24,7 @@ function Shoes() {
             .then((data) => setShoes(data))
             .catch((error) => console.error("Error fetching shoes:", error));
     }, []);
+
 
     // Delete a shoe
     const handleDeleteShoe = (id) => {
@@ -32,6 +37,7 @@ function Shoes() {
             .catch((error) => console.error("Error deleting shoe:", error));
     };
 
+
     // Show the update form for a specific shoe
     const handleUpdateShoe = (shoe) => {
         setEditingShoe(shoe.id);
@@ -43,11 +49,13 @@ function Shoes() {
         });
     };
 
+
     // Handle form changes
     const handleEditFormChange = (e) => {
         const { name, value } = e.target;
         setEditForm((prev) => ({ ...prev, [name]: value }));
     };
+
 
     // Submit the updated shoe
     const handleSubmitUpdate = () => {
@@ -69,6 +77,33 @@ function Shoes() {
             .catch((error) => console.error("Error updating shoe:", error));
     };
 
+
+    // Add new shoe
+    const handleAddNewShoe = () => {
+        fetch("http://localhost:8800/shoes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editForm),
+        })
+            .then((response) => response.json())
+            .then((message) => {
+                alert(message);
+                setShowAddForm(false);
+                // Refresh the shoes list
+                fetch("http://localhost:8800/shoes")
+                    .then((response) => response.json())
+                    .then((data) => setShoes(data));
+                setEditForm({
+                    prod_name: "",
+                    prod_description: "",
+                    image: "",
+                    price: "",
+                });
+            })
+            .catch((error) => console.error("Error adding shoe:", error));
+    };
+
+
     // Add to Cart functionality
     const handleAddToCart = (id) => {
         fetch("http://localhost:8800/cart", {
@@ -81,10 +116,12 @@ function Shoes() {
             .catch((error) => console.error("Error adding to cart:", error));
     };
 
+
     // Navigate to Cart Page
     const goToCart = () => {
         navigate("/cart");
     };
+
 
     return (
         <div className="App">
@@ -93,7 +130,12 @@ function Shoes() {
                 Cart
             </button>
 
-            
+
+            {/* Add New Shoe Button */}
+            <button className="add-button" onClick={() => setShowAddForm(true)}>
+                Add New Shoe
+            </button>
+           
             <div className="shoes">
                 {shoes.map((shoe) => (
                     <div key={shoe.id} className="shoe">
@@ -108,6 +150,44 @@ function Shoes() {
                     </div>
                 ))}
             </div>
+
+
+            {showAddForm && (
+                <div className="edit-form">
+                    <h2>Add New Shoe</h2>
+                    <input
+                        type="text"
+                        name="prod_name"
+                        placeholder="Product Name"
+                        value={editForm.prod_name}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="text"
+                        name="prod_description"
+                        placeholder="Description"
+                        value={editForm.prod_description}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="text"
+                        name="image"
+                        placeholder="Image URL"
+                        value={editForm.image}
+                        onChange={handleEditFormChange}
+                    />
+                    <input
+                        type="number"
+                        name="price"
+                        placeholder="Price"
+                        value={editForm.price}
+                        onChange={handleEditFormChange}
+                    />
+                    <button onClick={handleAddNewShoe}>Add Shoe</button>
+                    <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                </div>
+            )}
+
 
             {editingShoe && (
                 <div className="edit-form">
@@ -147,6 +227,7 @@ function Shoes() {
         </div>
     );
 }
+
 
 export default Shoes;
 
