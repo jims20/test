@@ -1,94 +1,112 @@
 .App{
-    height: 100vh;
-    padding: 0px 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  height: 100vh;
+  padding: 0px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 
-     
+   
 }
 
 .shoes{
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .shoe{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 img{
-    width: 200px;
-    height: 300px;
-    object-fit: cover;
-    background-color: brown;
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  background-color: brown;
 }
 
 .form{
-    display: flex;
-    flex-direction:  column;
-    gap: 20px;
+  display: flex;
+  flex-direction:  column;
+  gap: 20px;
 }
 
 .login-container,
 .register-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+max-width: 400px;
+margin: 50px auto;
+padding: 20px;
+border: 1px solid #ccc;
+border-radius: 8px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 form div {
-  margin-bottom: 15px;
+margin-bottom: 15px;
 }
 
 label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+display: block;
+margin-bottom: 5px;
+font-weight: bold;
 }
 
 input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+width: 100%;
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
 }
 
 button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+width: 100%;
+padding: 10px;
+background-color: #007bff;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+background-color: #0056b3;
 }
 
 .edit-form {
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 .edit-form input {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
 }
 .edit-form button {
-    margin-right: 10px;
+  margin-right: 10px;
+}
+
+.logout-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 20px; /* Same size as Login button */
+  font-size: 16px; /* Match Login button font size */
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: darkred;
 }
