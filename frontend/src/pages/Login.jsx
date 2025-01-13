@@ -34,8 +34,8 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <h2>Login</h2>
             <form onSubmit={handleLogin} className="form">
+                <h2>Login</h2>
                 <div>
                     <label>Email:</label>
                     <input
@@ -57,10 +57,16 @@ const Login = () => {
                     />
                 </div>
                 <button type="submit">Login</button>
+                <div className="register-link">
+                    <button
+                        type="button"
+                        className="register-button"
+                        onClick={() => navigate("/register")}
+                    >
+                        Register
+                    </button>
+                </div>
             </form>
-            <button className="register-button" onClick={() => navigate("/register")}>
-                Register
-            </button>
         </div>
     );
 };

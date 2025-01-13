@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route,  } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/register.jsx";
 import Shoes from "./pages/Shoes.jsx";
@@ -8,17 +8,30 @@ import Update from "./pages/Update.jsx";
 import "./style.css";
 
 function App() {
+    // Helper component to conditionally render the Navbar
+    const Navbar = () => {
+        const location = useLocation();
+        // Do not show navbar on Login or Register pages
+        if (location.pathname === "/" || location.pathname === "/register") {
+            return null;
+        }
+
+        return (
+            <nav className="navbar">
+                <h1>E-Commerce</h1>
+                <div>
+                    <a href="/shoes">Shop</a>
+                    <a href="/cart">Cart</a>
+                    <a href="/">Logout</a>
+                </div>
+            </nav>
+        );
+    };
+
     return (
         <div className="App">
             <BrowserRouter>
-                <nav className="navbar">
-                    <h1>E-Commerce</h1>
-                    <div>
-                        <a href="/shoes">Shop</a>
-                        <a href="/cart">Cart</a>
-                        <a href="/">Logout</a>
-                    </div>
-                </nav>
+                <Navbar /> {/* Conditional Navbar */}
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
@@ -33,3 +46,6 @@ function App() {
 }
 
 export default App;
+
+
+
