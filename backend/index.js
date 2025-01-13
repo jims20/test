@@ -98,7 +98,7 @@ app.post("/register", async (req, res) => {
     }
 });
 
-// Login route
+// Updated Login route
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
     const q = "SELECT * FROM users WHERE email = ?";
@@ -108,12 +108,14 @@ app.post("/login", (req, res) => {
             const user = data[0];
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (isPasswordValid) {
-                return res.status(200).json({ message: "Login successful!", user });
+                const { role } = user;
+                return res.status(200).json({ message: "Login successful!", role });
             }
         }
         return res.status(401).json({ message: "Invalid email or password" });
     });
 });
+
 
 // Cart routes
 app.get("/cart", (req, res) => {
@@ -147,4 +149,31 @@ app.delete("/cart/:id", (req, res) => {
 
 app.listen(8800, () => {
     console.log("Connected to backend");
+});
+
+// Fetch products by category (optional)
+app.get("/products", (req, res) => {
+    const category = req.query.category;
+    const q = category ? "SELECT * FROM shoes WHERE category = ?" : "SELECT * FROM shoes";
+    db.query(q, [category], (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
+
+// Add a product with category
+app.post("/products", (req, res) => {
+    const q = "INSERT INTO shoes (prod_name, prod_description, image, price, category) VALUES (?)";
+    const values = [
+        req.body.prod_name,
+        req.body.prod_description,
+        req.body.image,
+        req.body.price,
+        req.body.category,
+    ];
+
+    db.query(q, [values], (err) => {
+        if (err) return res.status(500).json(err);
+        res.status(200).json("Successfully added a new product.");
+    });
 });

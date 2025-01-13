@@ -22,7 +22,11 @@ const Login = () => {
             if (res.ok) {
                 const data = await res.json();
                 alert(data.message);
-                navigate("/shoes");
+                if (data.role === "admin") {
+                    navigate("/shoes");
+                } else {
+                    navigate("/user");
+                }
             } else {
                 const error = await res.json();
                 alert(error.message);

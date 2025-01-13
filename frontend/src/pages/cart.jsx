@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Cart() {
     const [cartItems, setCartItems] = useState([]);
+    const navigate = useNavigate(); // Initialize navigate
 
     useEffect(() => {
         fetch("http://localhost:8800/cart")
@@ -22,6 +24,11 @@ function Cart() {
 
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    };
+
+    // Function to navigate to the User page (Main Shop)
+    const goToUserPage = () => {
+        navigate("/user"); // Navigates to the User page
     };
 
     return (
@@ -49,11 +56,11 @@ function Cart() {
                     <button className="checkout-button">Proceed to Checkout</button>
                 </div>
             )}
+
+            {/* Button to navigate to the User (Main Shop) page */}
+            <button onClick={goToUserPage} className="main-shop-button">Go to Main Shop</button>
         </div>
     );
 }
 
 export default Cart;
-
-
-
