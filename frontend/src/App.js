@@ -14,13 +14,14 @@ function App() {
         const location = useLocation();
         const isLoginPage = location.pathname === "/";
         const isOrdersPage = location.pathname === "/orders"; // Check if on the Orders page
+        const isRegisterPage = location.pathname === "/register"; // Check if on the Register page
 
         return (
             <nav className="navbar">
                 <h1>E-Commerce</h1>
                 <div>
-                    {/* Navbar buttons shown if not on login page */}
-                    {!isLoginPage && (
+                    {/* Navbar buttons shown if not on login or register page */}
+                    {!isLoginPage && !isRegisterPage && (
                         <>
                             {/* Hide Shop link if on the Orders page */}
                             {!isOrdersPage && location.pathname !== "/user" && location.pathname !== "/cart" && (
