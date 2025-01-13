@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
     const [cartItems, setCartItems] = useState([]);
-    const navigate = useNavigate(); // Initialize navigate
+    const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+    const [shippingInfo, setShippingInfo] = useState({
+        name: "",
+        address: "",
+        phone: ""
+    });
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://localhost:8800/cart")
@@ -26,9 +32,29 @@ function Cart() {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
-    // Function to navigate to the User page (Main Shop)
-    const goToUserPage = () => {
-        navigate("/user"); // Navigates to the User page
+    const handleCheckout = () => {
+        setShowCheckoutForm(true); // Show the checkout form
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setShippingInfo((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmitCheckout = () => {
+        const orderData = {
+            shippingInfo,
+            items: cartItems,
+            total: calculateTotal(),
+        };
+
+        // Navigate to the Orders page and pass the order data
+        navigate("/orders", { state: { order: orderData } });
+
+        // Clear cart and shipping info after submission
+        setCartItems([]);
+        setShippingInfo({ name: "", address: "", phone: "" });
+        setShowCheckoutForm(false);
     };
 
     return (
@@ -53,12 +79,40 @@ function Cart() {
                 <div className="cart-summary">
                     <h2>Cart Summary</h2>
                     <p>Total: ${calculateTotal()}</p>
-                    <button className="checkout-button">Proceed to Checkout</button>
+                    <button className="checkout-button" onClick={handleCheckout}>
+                        Proceed to Checkout
+                    </button>
                 </div>
             )}
 
-            {/* Button to navigate to the User (Main Shop) page */}
-            <button onClick={goToUserPage} className="main-shop-button">Go to Main Shop</button>
+            {/* Checkout form modal */}
+            {showCheckoutForm && (
+                <div className="checkout-form">
+                    <h2>Shipping Information</h2>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Full Name"
+                        value={shippingInfo.name}
+                        onChange={handleInputChange}
+                    />
+                    <input
+                        type="text"
+                        name="address"
+                        placeholder="Address"
+                        value={shippingInfo.address}
+                        onChange={handleInputChange}
+                    />
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone Number"
+                        value={shippingInfo.phone}
+                        onChange={handleInputChange}
+                    />
+                    <button onClick={handleSubmitCheckout}>Submit Order</button>
+                </div>
+            )}
         </div>
     );
 }

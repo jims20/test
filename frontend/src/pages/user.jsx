@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const User = () => {
     const [shoes, setShoes] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     const [filteredShoes, setFilteredShoes] = useState([]);
+    const navigate = useNavigate();
+
+    // Assume you have a way to get the userId (from login state, context, etc.)
+    const userId = "example_user_id"; // Replace with actual user ID from context or state
 
     // Fetch available shoes
     useEffect(() => {
@@ -52,6 +57,11 @@ const User = () => {
             .catch((error) => console.error("Error adding to cart:", error));
     };
 
+    // Navigate to Orders page and pass userId
+    const goToOrdersPage = () => {
+        navigate("/orders", { state: { userId } }); // Pass userId to Orders page
+    };
+
     return (
         <div className="container user-page">
             <h1>Available Shoes</h1>
@@ -97,6 +107,11 @@ const User = () => {
                     </div>
                 ))}
             </div>
+
+            {/* New Orders Button */}
+            <button onClick={goToOrdersPage} className="orders-button">
+                View My Orders
+            </button>
         </div>
     );
 };
